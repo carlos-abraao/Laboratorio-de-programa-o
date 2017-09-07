@@ -4,7 +4,7 @@
 int main(void) {
 
 	//SEGUNDA  QUESTAO
-
+	printf("-------------Laboratório de programação 1-------------\n\n");
 	printf("Questão 2:\n");
 
 	float pgalao, taxad;

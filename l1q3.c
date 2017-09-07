@@ -6,7 +6,7 @@ int main(void) {
 	//TERCEIRA  QUESTAO
 
 	float seg;
-
+	printf("-------------Laboratório de programação 1-------------\n\n");
 	printf("Questão 3:\n");
 
 	printf("Digite a qtde de segundos(real):\n");

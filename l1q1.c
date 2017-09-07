@@ -8,7 +8,7 @@ int main(void) {
 
 	//PRIMEIRA  QUESTAO
 
-	printf("-------------Laboratório de programação 1:------------\n\n");
+	printf("-------------Laboratório de programação 1-------------\n\n");
 	printf("Questão 1:\n");
 
 	double raio;
@@ -20,7 +20,7 @@ int main(void) {
 	double r;
 	r = pow(raio,3);
 
-	volume = 4/3*pi*r;
+	volume = (4/3)*pi*r;
 
 	printf("O volume da esfera é %f:\n", volume);
 
