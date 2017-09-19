@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 int mdc(int x, int y){
-
 	int r=1;
 	while(1){
 		r = x%y;
@@ -11,7 +10,6 @@ int mdc(int x, int y){
 			y = r;
 		}
 	}
-
 }
 
 int main(void) {
