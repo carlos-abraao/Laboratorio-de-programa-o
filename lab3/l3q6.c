@@ -55,6 +55,8 @@ int main(void) {
 		printf(" %d", v[i]);
 
 	printf("]\n");
+
+	free(v);
 	
 	return 0;
 }
