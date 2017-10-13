@@ -2,20 +2,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int repeticoes(int **mat, int m, int n, int num){
-	int rep = 0;
-	for(int i = 0; i < m; i++){
-		for (int j = 0; j < n; ++j)	{
-			if(mat[i][j] == num)
-				rep++;
-		}
-	}
-	return rep;	
+void mult(int **mat, int m, int n, int num){
+	
+	for(int i = 0; i < m; i++)
+		for (int j = 0; j < n; ++j)
+			mat[i][j] *= num;
+	
 }
 int main(void) {
 
 	printf("-------------Laboratório de programação 3-------------\n\n");
-	printf("Questão 9:\n");
+	printf("Questão 10:\n");
 
 	int m, n, **matriz, num;
 
@@ -34,12 +31,18 @@ int main(void) {
 		}
 	}
 
-	printf("Digite um número a ser buscado na matriz:\n");
+	printf("Digite um número para multiplicar com a matriz:\n");
 	scanf("%d", &num);
 
-	int rep = repeticoes(matriz, m, n, num);
+	mult(matriz, m, n, num);
 
-	printf("O número %d aparece %d vezes na matriz\n", num, rep);
+	printf("matriz multiplicada:\n");
+	for(int i = 0; i < m; i++){
+		for (int j = 0; j < n; ++j)	{
+			printf("%d ", matriz[i][j]);
+		}
+		printf("\n");
+	}
 	
 	return 0;
 }

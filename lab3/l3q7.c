@@ -25,8 +25,8 @@ int main(void) {
 	seq = (int*) malloc(n*sizeof(int));
 
 	printf("Digite os valores do vetor:\n");
-		for(int i = 0; i< n; i++){
-			scanf("%d", &seq[i]);	
+	for(int i = 0; i< n; i++){
+		scanf("%d", &seq[i]);	
 	}
 	int num;
 	printf("Digite um núemro para ser buscado:\n");

@@ -78,7 +78,7 @@ void mergeSort(int vetor[], int comeco, int fim){
 int main(void) {
 
 	printf("-------------Laboratório de programação 3-------------\n\n");
-	printf("Questão 7:\n");
+	printf("Questão 8:\n");
 
 	int n, *seq;
 
