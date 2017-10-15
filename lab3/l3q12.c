@@ -40,7 +40,17 @@ int changetable(int j, int x, int y, int table[][3]){
 }
 
 int checktable(int table[][3]){
-	int aux;
+	int aux = 3, over;
+
+	for (int i = 0; i < 3; ++i){
+		for (int j = 0; j < 3; ++j){
+			over = table[i][j];
+			if (over == -1) aux = -1;
+		}
+	}
+
+	if (aux == 3) return aux;	
+
 	for (int i = 0; i < 3; ++i){
 		aux = table[i][0];
 		if(table[i][0] == table[i][1] && table[i][0] == table[i][2] && aux != -1) return aux;
@@ -89,9 +99,11 @@ int main(void) {
 	else j2 = 1;
 
 	while(1){
+		printf("\e[1;1H\e[2J");
 		printable(tabuleiro);
 
 		printf("Jogador 1, digite a posição onde colocar seu símbolo:\n");
+
 		scanf("%d%d", &x, &y);
 
 		aux = changetable(j1, x, y, tabuleiro);
@@ -105,10 +117,11 @@ int main(void) {
 		done  = checktable(tabuleiro);
 
 		if(done != -1) break;
-
+		printf("\e[1;1H\e[2J");
 		printable(tabuleiro);
 
 		printf("Jogador 2, digite a posição onde colocar seu símbolo:\n");
+
 		scanf("%d%d", &x, &y);
 
 		aux = changetable(j2, x, y,tabuleiro);
@@ -123,9 +136,11 @@ int main(void) {
 		if(done != -1) break;
 
 	}
-
+	printf("\e[1;1H\e[2J");
 	printable(tabuleiro);
-	printf("símbolo %d ganhou! \n", done);
+
+	if (done == 3) printf("Deu velha!\n");
+	else printf("símbolo %d ganhou! \n", done);	
 
 	printf("\n");
 	
