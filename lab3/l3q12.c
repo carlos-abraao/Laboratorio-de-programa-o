@@ -40,16 +40,7 @@ int changetable(int j, int x, int y, int table[][3]){
 }
 
 int checktable(int table[][3]){
-	int aux = 3, over;
-
-	for (int i = 0; i < 3; ++i){
-		for (int j = 0; j < 3; ++j){
-			over = table[i][j];
-			if (over == -1) aux = -1;
-		}
-	}
-
-	if (aux == 3) return aux;	
+	int aux, over;		
 
 	for (int i = 0; i < 3; ++i){
 		aux = table[i][0];
@@ -75,7 +66,14 @@ int checktable(int table[][3]){
 	aux = table[0][2];
 
 	if(table[0][2] == table[1][1] && table[0][2] == table[2][0]) return aux;	
-	else aux = -1;
+	else aux = 3;
+
+	for (int i = 0; i < 3; ++i){
+		for (int j = 0; j < 3; ++j){
+			over = table[i][j];
+			if (over == -1) aux = -1;
+		}
+	}	
 
 	return aux;
 
