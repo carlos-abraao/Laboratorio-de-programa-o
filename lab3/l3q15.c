@@ -17,17 +17,19 @@ void copia(char *orgin, char *desti){
 	desti[i] = '\0';
 }
 
-void remove(char *string, char caractere){
-	int j = 0;
-	char aux[comprimento(string)];
-	for (int i = 0; string[i] != '\0'; i++){
+void remover(char *string, char caractere){
+	int j = 0, i;
+	char aux[comprimento(string)+1];
+	for (i = 0; string[i] != '\n'; i++){
 		if (string[i] != caractere){
 			aux[j] = string[i];
 			j++;
 		}
 	}
+	aux[j] = '\0';
 
-	for (int i = 0; string[i] != '\0'; i++) string[i] = aux[i];
+
+	for (i = 0; string[i] != '\0'; i++) string[i] = aux[i];
 
 }
 
@@ -56,9 +58,6 @@ void inverte(char *string){
 
 int compara (char* s1, char* s2){
 	int i;
-
-	printf("%s\n", s1);
-	printf("%s\n", s2);
 	
 	for (i=0; s1[i]!='\0' && s2[i]!='\0'; i++){
 		if (s1[i] < s2[i])	return -1;
@@ -78,8 +77,7 @@ int palindromo(char *string){
 	char *ginrts;
 	int aux;
 
-	remove(string, ' ');
-	remove(string, 10);
+	remover(string, ' ');	
 
 	ginrts = duplica(string);
 
