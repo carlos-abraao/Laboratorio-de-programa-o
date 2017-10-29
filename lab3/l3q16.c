@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int comprimento (char* s){	
 	int n = 0;
 
@@ -109,37 +108,7 @@ void inverte(char *string){
 
 }
 
-int ocorrenciastr(char *frase, char *palavra){
-	int aux = 0, test;
-
-	for (int i = 0; frase[i] != '\0'; i++){
-		if (frase[i] == palavra[aux]){
-			for (int j = 0; palavra[j] != '\0'; j++){
-				if (palavra[j] != frase[j+i]){
-					break;
-				}
-				else if(frase[j+1] == '\0') return 1;
-			}
-		}
-	}
-
-	return 0;
-}
-
-
-
-int main(void) {
-	printf("\e[1;1H\e[2J");
-	printf("-------------Laboratório de programação 3-------------\n\n");
-	printf("Questão 16:\n");
-
-	char *A = (char*) malloc ((256)*sizeof(char)), *B = (char*) malloc ((256)*sizeof(char));
-
-	if (A == NULL || B == NULL) {
-        printf ("Sem memória\n");
-        return 1;
-    }
-
+void start(char *A, char *B){
 	printf("Digite uma string com até 255 caracteres:\n");
 
 	fgets(A, 256, stdin);
@@ -149,6 +118,88 @@ int main(void) {
 	fgets(B, 256, stdin);
 
 	remover(A, ' '); remover(B, ' ');
+	
+}
+
+int ocorrenciastr(char *frase, char *palavra){
+	int aux = 0, test;
+
+	for (int i = 0; frase[i] != '\0'; i++){
+		if (frase[i] == palavra[aux]){
+			for (int j = 0; palavra[j] != '\0'; j++){
+				if (palavra[j] != frase[j+i]){
+					break;
+				}
+				else if(palavra[j+1] == '\0') return 1;
+			}
+		}
+	}
+
+	return 0;
+}
+
+int nocorrencias(char *frase, char *palavra);
+
+int pocorrencia(char *frase, char *palavra);
+
+void removep(char *frase, char *palavra);
+
+void insercao(char *frase, char *palavra, int pos);
+
+void subsitui(char *frase, char *palavra, char *nova);
+
+int main(void) {
+	printf("\e[1;1H\e[2J");
+	printf("-------------Laboratório de programação 3-------------\n\n");
+	printf("Questão 16:\n");
+
+	char *A = (char*) malloc ((256)*sizeof(char)), *B = (char*) malloc ((256)*sizeof(char)); char slave[2];
+
+	int op;
+
+	if (A == NULL || B == NULL) {
+        printf ("Sem memória\n");
+        return 1;
+    }
+
+    printf("Entre com a opção desejada:\n1 - ocorrencia\n2 - nocorrencias\n3 - pocorrencia\n4 - remove\n5 - insercao\n6 - subsitui\n");
+
+    scanf("%d", &op); fgets(slave, 2, stdin);
+
+    switch(op){
+    	case 1:
+
+		break;
+
+    	case 2:
+
+		break;
+
+    	case 3:
+
+		break;
+
+		case 4:
+
+		break;
+
+		case 5:
+
+		break;
+
+		case 6:
+
+		break;
+
+		default:
+			printf("Entrada inválida\n");
+
+    }
+
+    start(A, B);
+
+    printf("A: %s\n", A);
+	printf("B: %s\n", B);
 
 	int test = ocorrenciastr(A, B);
 
