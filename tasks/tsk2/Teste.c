@@ -220,7 +220,7 @@ float testeNovaComDadosInvalidos() {
 float testeDestroiComDadosValidos() {
 	float pontuacao = 0;
 	Fila *fila = nova_f(2);
-	destroi_f(fila);
+	destroi_f(&fila);
 	if(fila != NULL) {
 		printf("[Falhou 0.00] - Teste da função destroi_f() com dados válidos!\n");
 	} else {
@@ -233,7 +233,7 @@ float testeDestroiComDadosValidos() {
 float testeDestroiComDadosNulos() {
 	float pontuacao = 0;
 	Fila *fila = NULL;
-	destroi_f(fila);
+	destroi_f(&fila);
 	if(fila == NULL) {
 		printf("[Passou 0.50] - Teste da função destroi_f() com dados nulos!\n");
 		pontuacao = 0.50;

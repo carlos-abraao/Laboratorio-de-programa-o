@@ -27,15 +27,11 @@ Fila *nova_f(int tamanho){
 }
 
 /* Libera a memória de uma fila previamente criada */
-void destroi_f(Fila *fila){
+void destroi_f(Fila **fila){
 	if(fila == NULL) return;
-	fila->tamanho = 0;
-	fila->frente  = 0;
-	fila->fim 	  = 0;		
-	free(fila->alus);
-	fila->alus = NULL;
-	free(fila);
-	fila = NULL;
+	
+	free(*fila);
+	*fila = NULL;
 }
 
 /* Adiciona um aluno na fila. Retorna 1 se der certo e 0 caso contrário */

@@ -26,18 +26,11 @@ Fila *nova_f(int tamanho){
 }
 
 /* Libera a memória de uma fila previamente criada */
-void destroi_f(Fila *fila){
+void destroi_f(Fila **fila){
 	if(fila == NULL) return;
-	fila->tamanho = 0;
 
-	free(fila->inicio);
-	fila->inicio = NULL;
-
-	free(fila->final);
-	fila->final = NULL;
-
-	free(fila);
-	fila = NULL;
+	free(*fila);
+	*fila = NULL;
 }
 
 /* Adiciona um aluno na fila. Retorna 1 se der certo e 0 caso contrário */
@@ -66,13 +59,20 @@ int retira_f(Fila *fila){
 
 	Aluno *aux = (Aluno*) malloc(sizeof(Aluno));
 
-	aux = fila->inicio;	
+	if(fila->tamanho == 1){
+		aux = fila->inicio;	
+		free(aux);
+		fila->inicio = NULL;
+		fila->final  = NULL;
+		fila->tamanho--	 ;
 
-	fila->inicio = aux->proximo;
-
-	free(aux);	
-	
-	fila->tamanho--;
+	}
+	else{
+		aux = fila->inicio;
+		fila->inicio = aux->proximo;
+		free(aux);	
+		fila->tamanho--;
+	}
 
 	return 1;
 }

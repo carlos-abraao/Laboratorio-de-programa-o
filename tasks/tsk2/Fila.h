@@ -7,7 +7,7 @@ typedef struct fila Fila;
 Fila *nova_f(int tamanho);
 
 /* Libera a memória de uma fila previamente criada */
-void destroi_f(Fila *fila);
+void destroi_f(Fila **fila);
 
 /* Adiciona um aluno na fila. Retorna 1 se der certo e 0 caso contrário */
 int adiciona_f(Fila *fila, Aluno *aluno);
