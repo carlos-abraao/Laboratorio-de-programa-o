@@ -1,18 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "viagem.h"
-//#include "usuario.h"
 
 int main(void){	
 
-	printf("Hello World!!\n");
+	printf("\e[1;1H\e[2J");
 
-	Viagem *a, *b, *c;
+	Viagem *a, *b, *c, *d, *e, *f;
 
 	a = nova_v(10, 5, 2017, "fortaleza", "Brasil", 15);
-	b = nova_v(20, 8, 2017, "teresina", "Brasil", 10);
+	b = nova_v(20, 8, 2017, "teresina", "Brasil", 365);
 	c = nova_v(25, 12, 2017, "blumenau", "Brasil", 15);
+	d = nova_v(10, 5, 2017, "cidaded", "paisd", 15);
+	e = nova_v(20, 8, 2017, "cidadee", "paise", 10);
+	f = nova_v(25, 12, 2017, "cidadef", "paisf", 36);
 
+	int novodia, novomes, novoano;
+
+	acrescperiodo(f, &novodia, &novomes, &novoano);
+
+	printvig(f);
+
+	printf("nova data: %d/%d/%d\n\n", novodia, novomes, novoano);
+
+	/*
 	int ID, dia, mes, ano, per;
 	char cidade[80], pais[30];
 	
@@ -22,9 +33,7 @@ int main(void){
 
 	//atribui_direita_v(a, b);
 
-	//atribui_esquerda_v(a, c);
-
-	Viagem *d = acessa_esquerda_v(a);
+	//atribui_esquerda_v(a, c);	
 
 	Usuario * u1 = novo_u(1, "Abraao");	
 
@@ -56,17 +65,36 @@ int main(void){
 
 	adiciona_viagem_u(u1, c);
 
-	adiciona_viagem_u(u1, c);
+	adiciona_viagem_u(u1, c);	
 
-	printf("size_v : %d\n", u1->size_v);
+	adiciona_viagem_u(u2, d);	
+
+	adiciona_viagem_u(u3, e);	
+
+	adiciona_viagem_u(u4, e);
+
+	printvig(u1->viagens);
 
 	printvig(u1->viagens->esquerda);
 
 	printvig(u1->viagens->direita);
 
-	printf("\n\n%d\n", maiorvig(b,c));
+	printvig(u2->viagens);
 
-	system("pause");
+	printvig(u3->viagens);
+
+	printvig(u4->viagens);
+
+	Usuario** T = filtrar_amigos_por_destino_viagem_u(u1, "cidadee","paise");
+
+	printf("Amigos filtrados\n\n");
+
+	for (int i = 0; i < u1->size_a; ++i)
+	{
+		printusr(T[i]);
+	}*/
+
+	//remover_viagem_u(u1, 2);	
 
 	return 0;
 }

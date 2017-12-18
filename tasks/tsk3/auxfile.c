@@ -1,12 +1,12 @@
-void	remover_viagem_u(Usuario *usr,	int	id){
+void remover_viagem_u(Usuario *usr,	int	id){
 	remove_aux(usr->viagens, id);
 }
 
-Viagem* VisitaEmOrdem(Viagem * vig, int id){
+Viagem* EmOrdemId(Viagem * vig, int id){
 	if (vig != NULL) {
-		VisitaEmOrdem(vig->esquerda, id);
+		EmOrdemId(vig->esquerda, id);
 		if(vig->ID == id) return vig;
-		VisitaEmOrdem(vig->direita, id);
+		EmOrdemId(vig->direita, id);
 	}
 	else return 0;
 }
@@ -25,7 +25,7 @@ void remove_aux(Viagem * vig, int id){
 
 	Viagem* aux;
 
-	aux = VisitaEmOrdem(vig, id);
+	aux = EmOrdemId(vig, id);
 
 	if(aux == NULL) return;
 
@@ -42,27 +42,35 @@ void remove_aux(Viagem * vig, int id){
 			free(aux);
 			aux = aux1;
 		}
-		else{		
+		else{//possui filho esquerdo		
 			Viagem* aux1 = aux->direito;
 			free(aux);
 			aux = aux1;	
 		}
 		break;
-	case 2: //pussui dois filhos
+	case 2: //pussui dois filhos		
+		// Obter ponteiro para antecessor
+		// (antecessor é o maior elemento da subarvore esquerda)
+
 		Viagem* aux1 = aux, antecessor = maior(aux->esquerdo);
-		int dia, mes, ano, periodo; 
+		//Trocar os dados entre o atual e o antecessor.
+		int dia, mes, ano, periodo;
+
 		char cidade[80], char pais[30];
+
+		aux->ID = antecessor->ID;
+
 		acessa_v(antecessor, &dia, &mes, &ano, &periodo, cidade, pais);
+
 		atribui_v(aux, dia, mes, ano, cidade, pais, periodo);
-		antecessor = aux1;
+
+		antecessor->ID = aux->ID;
+
+		acessa_v(aux1, &dia, &mes, &ano, &periodo, cidade, pais);
+
+		atribui_v(antecessor, dia, mes, ano, cidade, pais, periodo);
+
 		remove_aux(aux->esquerdo, id);
-
-
-
-
 	}
-
-
-
 
 }

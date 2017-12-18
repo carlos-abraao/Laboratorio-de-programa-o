@@ -174,7 +174,7 @@ Usuario *novo_u(int	id,	char *nome){
 
 	usr -> size_a = 0;
 
-	usr -> viagens = NULL;//(Viagem*) malloc(sizeof(Viagem));
+	usr -> viagens = NULL;
 
 	usr -> size_v = 0;
 
@@ -299,14 +299,17 @@ void acrescperiodo(Viagem *vig, int* daux, int* maux, int* aaux){
 	m = vig->mes;
 	a = vig->ano;
 	
-	while(p!=0){
+	while(p != 0){
 		if(p > 30){			
-			if (m + 1 > 12 ) m = 1;
-			else m++;
+			m++;
+			if (m > 12 ){ 
+				m = 1;
+				a++;
+			}
 			p = p - 30;
 		}
 		else if(d + p > 30){
-			d = 30 - p - 1;
+			d = (d + p) - 30;			
 			if (m + 1 > 12 ){ 
 				m = 1;
 				a++;
@@ -324,15 +327,22 @@ void acrescperiodo(Viagem *vig, int* daux, int* maux, int* aaux){
 	*maux = m;
 	*aaux = a;
 }
-/*
+
 int sobreposicao(Viagem* vig1, Viagem* vig2){
 	int d1, m1, a1, p1, d2, m2, a2, p2;
+
 	acrescperiodo(vig1, &d1, &m1, &a1);
+
 	acrescperiodo(vig1, &d2, &m2, &a2);
+
+	if (vig2->dia)
+	{
+		/* code */
+	}
 
 	
 
-}*/
+}
 
 void inserir(Viagem * &vig1, Viagem* vig2) {	
 	if (vig1 == NULL){ //cheguei numa folha, que vai rceber o novo valor
@@ -347,18 +357,19 @@ void inserir(Viagem * &vig1, Viagem* vig2) {
 	}	
 }
 
-Viagem * VisitaEmOrdem(Viagem * vig, int id){
+//percorre a arvore em ordem e retorna de acorda com o id
+Viagem * EmOrdemId(Viagem * vig, int id){
 	if (vig != NULL) {
-		VisitaEmOrdem(vig->esquerda, id);
+		EmOrdemId(vig->esquerda, id);
 		if(vig->ID == id) return vig;
-		VisitaEmOrdem(vig->direita, id);
+		EmOrdemId(vig->direita, id);
 	}
-	else return 0;
+	else return NULL;
 }
 
 void adiciona_viagem_u(Usuario *usr, Viagem	*vig){
-	if (VisitaEmOrdem(usr->viagens, vig->ID) != NULL){
-		printf("\nViagem com ID repetido!\n");
+	if (EmOrdemId(usr->viagens, vig->ID) != NULL){
+		printf("Viagem com ID repetido!\n\n");
 		return;
 	}
 	if(usr->viagens == NULL){
@@ -378,32 +389,259 @@ void adiciona_viagem_u(Usuario *usr, Viagem	*vig){
 	}		
 }
 
-void	remover_viagem_u(Usuario *usuario,	int	id){
-	
+//Retorna um ponteiro para o maior elemento da subávore
+Viagem * maiorSub(Viagem *vig) {
+	if (vig == NULL) return NULL;
+		
+	if (vig->direita != NULL) return maiorSub(vig->direita);		
+
+	return vig;
+}
+
+void remove_viagem_aux(Viagem * vig, int id){
+	if(vig == NULL) return;
+
+	Viagem* aux;
+
+	aux = EmOrdemId(vig, id);
+
+	if(aux == NULL) return;
+
+	int nfilhos = (aux->esquerda? 1:0) + (aux->direita? 1:0);
+
+	switch(nfilhos){
+	case 0: //folha
+		//Viagem* aux1;
+		libera_v(&aux);		
+		aux = NULL;
+		break;
+	case 1: //apenas um filho
+		if(aux->esquerda != NULL){//possui filho esquerda
+			Viagem* aux1 = aux->esquerda;
+			libera_v(&aux);
+			aux = aux1;
+		}
+		else{//possui filho esquerda		
+			Viagem* aux1 = aux->direita;
+			libera_v(&aux);
+			aux = aux1;	
+		}
+		break;
+	case 2: //pussui dois filhos		
+		// Obter ponteiro para antecessor
+		// (antecessor é o maior elemento da subarvore esquerda)
+
+		Viagem* aux1;
+
+		Viagem* antecessor = maiorSub(aux->esquerda);
+		//Trocar os dados entre o atual e o antecessor.
+		int dia, mes, ano, periodo;
+
+		char cidade[80], pais[30];
+
+		aux1->ID = aux->ID;
+
+		acessa_v(aux, &dia, &mes, &ano, &periodo, cidade, pais);
+
+		atribui_v(aux1, dia, mes, ano, cidade, pais, periodo);
+
+		aux->ID = antecessor->ID;
+
+		acessa_v(antecessor, &dia, &mes, &ano, &periodo, cidade, pais);
+
+		atribui_v(aux, dia, mes, ano, cidade, pais, periodo);
+
+		antecessor->ID = aux1->ID;
+
+		acessa_v(aux1, &dia, &mes, &ano, &periodo, cidade, pais);
+
+		atribui_v(antecessor, dia, mes, ano, cidade, pais, periodo);
+
+		remove_viagem_aux(aux->esquerda, id);
+	}
 
 }
 
+void remover_viagem_u(Usuario *usr,	int	id){
+	remove_viagem_aux(usr->viagens, id);
+}
 
-Viagem	*listar_viagens_u(Usuario	*usuario);
+//percorre a arvore me preordem e retorna todas 
+/*Viagem * preOrdem(Viagem * vig){
+	if (vig != NULL) {
+		EmOrdemId(vig->esquerda);		
+		EmOrdemId(vig->direita);
+		return vig;
+	}
+	else return NULL;
+}
+*/
 
-Viagem	*buscar_viagem_por_data_u(Usuario	*usuario,	int	dia,	int	mes,	int	ano);
+Viagem*	*listar_viagens_u(Usuario *usuario){
 
-Viagem	*buscar_viagem_por_destino_u(Usuario	*usuario,	char	*cidade,	char	*pais);
 
-Viagem *filtrar_viagens_amigos_por_data_u(Usuario *usuario,	int	dia,	int	mes,	int	ano);
 
-Viagem *filtrar_viagens_amigos_por_destino_u(Usuario *usuario,	char	*cidade,	char	*pais);
 
-Usuario *filtrar_amigos_por_data_viagem_u(Usuario *usuario,	int	dia,	int	mes,	int	ano);
 
-Usuario *filtrar_amigos_por_destino_viagem_u(Usuario *usuario,	char	*cidade,	char	*pais);
+}
+
+//percorre a arvore em ordem e retorna de acorda com a data
+Viagem * EmOrdemData(Viagem * vig, int	dia,	int	mes,	int	ano){
+	if (vig != NULL) {
+		EmOrdemData(vig->esquerda, dia, mes, ano);
+		if(vig->dia == dia && vig->mes == mes && vig->ano == ano) return vig;
+		EmOrdemData(vig->direita, dia, mes, ano);
+	}
+	else return NULL;
+}
+
+Viagem	*buscar_viagem_por_data_u(Usuario	*usr,	int	dia,	int	mes,	int	ano){
+	if(usr->size_v == 0) return NULL;
+
+	Viagem* vig;
+
+	vig = EmOrdemData(usr->viagens, dia, mes, ano);
+
+	return vig;
+};
+
+//percorre a arvore em ordem e retorna de acorda com o destino
+Viagem * EmOrdemDestino(Viagem * vig, char *cidade, char *pais){
+	if (vig != NULL) {
+		EmOrdemDestino(vig->esquerda,  cidade, pais);
+		if( (strcmp(vig->cidade, cidade) == 0) && (strcmp(vig->pais, pais) == 0) ) return vig;
+		EmOrdemDestino(vig->esquerda,  cidade, pais);
+	}
+	else return NULL;
+}
+
+Viagem	*buscar_viagem_por_destino_u(Usuario	*usr,	char	*cidade,	char	*pais){
+	if(usr->size_v == 0) return NULL;
+
+	Viagem* vig;
+
+	vig = EmOrdemDestino(usr->viagens, cidade, pais);
+
+	return vig;
+}
+
+Viagem* *filtrar_viagens_amigos_por_data_u(Usuario *usr,	int	dia,	int	mes,	int	ano){
+
+	if(usr->size_a == 0) return NULL;
+
+	// um vetor de viagem* com tamanho da qtde de amigos do usuario, onde cada posição é uma viagem de um amigo
+	Viagem ** lista = (Viagem**) malloc((usr->size_a)*sizeof(Viagem*));
+
+	//para cada amigo de usr, verifico se alguma viagem que atende a restrição de data.
+	for(int i = 0; i < usr->size_a; i++){
+		lista[i] = buscar_viagem_por_data_u(usr->amigos[i], dia, mes, ano);
+	}
+
+	//nova lista que só vai conter valores não nulos
+	Viagem ** lista1 = (Viagem**) malloc((usr->size_a)*sizeof(Viagem*));
+
+	int j = 0;
+
+	for(int i = 0; i < usr->size_a; i++){
+		if(lista[i] != NULL){
+			lista1[j] = lista[i];
+			j++;
+		}
+	}	
+
+	//realocando nova lista para ocupar só o espaço necessário
+	lista1 = (Viagem **) realloc(lista1, (j+1)*sizeof(Viagem));
+
+	return lista1;
+}
+
+Viagem **filtrar_viagens_amigos_por_destino_u(Usuario *usr,	char	*cidade,	char	*pais){
+
+	if(usr->size_a == 0) return NULL;
+
+	Viagem ** lista = (Viagem**) malloc((usr->size_a)*sizeof(Viagem*));
+
+	for(int i = 0; i < usr->size_a; i++){
+		lista[i] = buscar_viagem_por_destino_u(usr->amigos[i], cidade, pais);
+	}
+
+	Viagem ** lista1 = (Viagem**) malloc((usr->size_a)*sizeof(Viagem*));
+
+	int j = 0;
+
+	for(int i = 0; i < usr->size_a; i++){
+		if(lista[i] != NULL){
+			lista1[j] = lista[i];
+			j++;
+		}
+	}	
+
+	lista1 = (Viagem **) realloc(lista1, (j+1)*sizeof(Viagem));
+
+	return lista1;
+}
+
+Usuario **filtrar_amigos_por_data_viagem_u(Usuario *usr,	int	dia,	int	mes,	int	ano){
+	if(usr->size_a == 0) return NULL;
+
+	Usuario ** lista = (Usuario**) malloc((usr->size_a)*sizeof(Usuario*));
+
+	int j = 0;
+
+	for(int i = 0; i < usr->size_a; i++){
+		if(buscar_viagem_por_data_u(usr->amigos[i], dia, mes, ano) != NULL){			
+			lista[j++] = novo_u(usr->amigos[i]->ID, usr->amigos[i]->nome);
+		}
+	}
+
+	lista = (Usuario **) realloc(lista, (j+1)*sizeof(Usuario));
+
+	return lista;
+}
+
+Usuario **filtrar_amigos_por_destino_viagem_u(Usuario *usr,	char	*cidade,	char	*pais){
+	if(usr->size_a == 0) return NULL;
+
+	Usuario ** lista = (Usuario**) malloc((usr->size_a)*sizeof(Usuario*));
+
+	int j = 0;
+
+	for(int i = 0; i < usr->size_a; i++){
+		if(buscar_viagem_por_destino_u(usr->amigos[i], cidade, pais) != NULL){			
+			lista[j++] = novo_u(usr->amigos[i]->ID, usr->amigos[i]->nome);
+		}
+	}
+
+	lista = (Usuario **) realloc(lista, (j+1)*sizeof(Usuario));
+
+	return lista;	
+}
+
+int	tamanho_u(){
+	int size = 0;
+	size += 3+sizeof(int);
+	size += 81*sizeof(char);	
+	size += sizeof(Viagem*);
+	size += sizeof(usuario**);
+	return size;
+}
 
 void printvig(Viagem * vig){
-	printf("vig-Id: %d\nVig data: %d/%d/%d\nVig cidade: %s\nvig pais: %s\nvig periodo: %d\n", vig->ID, vig->dia,vig->mes,vig->ano, vig->cidade, vig->pais, vig->periodo);
+
+	if(vig == NULL){
+		printf("Viagem inválida\n\n");
+		return;
+	}
+
+	printf("vig Id: %d\nVig data: %d/%d/%d\nVig cidade: %s\nvig pais: %s\nvig periodo: %d\n\n", vig->ID, vig->dia,vig->mes,vig->ano, vig->cidade, vig->pais, vig->periodo);
 }
 
 void printusr(Usuario * usr){
-	printf("usr-Id: %d\nusr nome: %s\n", usr->ID, usr->nome);
+	if(usr == NULL){
+		printf("Usuario inválido\n\n");
+		return;
+	}
+	printf("usr Id: %d\nusr nome: %s\n\n", usr->ID, usr->nome);
 }
 
 void printusramgs(Usuario* usr){
@@ -414,5 +652,3 @@ void printusramgs(Usuario* usr){
 		printf("id amigo : %d\n", lista[i]->ID);
 	}
 }
-
-int	tamanho_u();
