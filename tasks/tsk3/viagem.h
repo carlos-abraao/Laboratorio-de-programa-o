@@ -329,22 +329,39 @@ void acrescperiodo(Viagem *vig, int* daux, int* maux, int* aaux){
 }
 
 int sobreposicao(Viagem* vig1, Viagem* vig2){
-	int d1, m1, a1, p1, d2, m2, a2, p2;
+	int d1, m1, a1, p1, d2, m2, a2, p2, test;
 
 	acrescperiodo(vig1, &d1, &m1, &a1);
 
-	acrescperiodo(vig1, &d2, &m2, &a2);
+	acrescperiodo(vig2, &d2, &m2, &a2);
 
-	if (vig2->dia)
-	{
-		/* code */
+	if(a2 >= vig1->ano && a2 <= a1){
+		if(m2 >= vig1->mes && m2 <= m1){
+			if(d2 >= vig1->dia && d2 <= d1){
+				return 1;
+			}
+		}
 	}
 
-	
+	if(vig2->ano >= vig1->ano && vig2->ano <= a1){
+		if(vig2->ano >= vig1->mes && vig2->ano <= m1){
+			if(vig2->ano >= vig1->dia && vig2->ano <= d1){
+				return 1;
+			}
+		}
+	}
 
+	return 0;
 }
 
-void inserir(Viagem * &vig1, Viagem* vig2) {	
+
+void inserir(Viagem * &vig1, Viagem* vig2) {
+	/* O procedimento de sobreosição, sozinho, está correto. No entanto a chamada dele, dentro da função inserir, se mostrou problemática. Mais especificamente na função de acrescentar
+	if (sobreposicao(vig1, vig2) == 1){
+		printf("Viagem com sobreposição\n\n");
+		return;
+	}
+	*/
 	if (vig1 == NULL){ //cheguei numa folha, que vai rceber o novo valor
 		vig1 = (Viagem*) malloc(sizeof(Viagem));
 		vig1 = vig2;		
@@ -434,7 +451,7 @@ void remove_viagem_aux(Viagem * vig, int id){
 		Viagem* aux1;
 
 		Viagem* antecessor = maiorSub(aux->esquerda);
-		//Trocar os dados entre o atual e o antecessor.
+		//Trocar os dados entre o atual e o antecessor e depois chamar o procedimento novamente com o atual na nova posição
 		int dia, mes, ano, periodo;
 
 		char cidade[80], pais[30];
@@ -463,26 +480,53 @@ void remove_viagem_aux(Viagem * vig, int id){
 }
 
 void remover_viagem_u(Usuario *usr,	int	id){
+	//procedimento remover não funcionando corretamente
 	remove_viagem_aux(usr->viagens, id);
 }
 
-//percorre a arvore me preordem e retorna todas 
-/*Viagem * preOrdem(Viagem * vig){
-	if (vig != NULL) {
-		EmOrdemId(vig->esquerda);		
-		EmOrdemId(vig->direita);
-		return vig;
+void printvig(Viagem * vig){
+
+	if(vig == NULL){
+		printf("Viagem inválida\n\n");
+		return;
 	}
-	else return NULL;
+
+	printf("vig Id: %d\nVig data: %d/%d/%d\nVig cidade: %s\nvig pais: %s\nvig periodo: %d\n\n", vig->ID, vig->dia,vig->mes,vig->ano, vig->cidade, vig->pais, vig->periodo);
 }
-*/
 
-Viagem*	*listar_viagens_u(Usuario *usuario){
+void printusr(Usuario * usr){
+	if(usr == NULL){
+		printf("Usuario inválido\n\n");
+		return;
+	}
+	printf("usr Id: %d\nusr nome: %s\n\n", usr->ID, usr->nome);
+}
 
+void printusramgs(Usuario* usr){
+	Usuario** lista = lista_amigos_u(usr);
 
+	for (int i = 0; i < usr->size_a; i++)
+	{
+		printf("id amigo : %d\n", lista[i]->ID);
+	}
+}
 
+void visita(Viagem* vig){
+	printvig(vig);
+}
 
+// Efetua um percurso em-ordem
+void VemOrdem(Viagem* vig) {
+	if (vig != NULL) {
+		VemOrdem(vig->esquerda);
+		visita(vig);
+		VemOrdem(vig->direita);
+	}
+}
 
+void listar_viagens_u(Usuario *usr){
+	//Não consegui retornar uma lista para viagens, esse procedimento apenas as imprime
+	VemOrdem(usr->viagens);
 }
 
 //percorre a arvore em ordem e retorna de acorda com a data
@@ -626,29 +670,3 @@ int	tamanho_u(){
 	return size;
 }
 
-void printvig(Viagem * vig){
-
-	if(vig == NULL){
-		printf("Viagem inválida\n\n");
-		return;
-	}
-
-	printf("vig Id: %d\nVig data: %d/%d/%d\nVig cidade: %s\nvig pais: %s\nvig periodo: %d\n\n", vig->ID, vig->dia,vig->mes,vig->ano, vig->cidade, vig->pais, vig->periodo);
-}
-
-void printusr(Usuario * usr){
-	if(usr == NULL){
-		printf("Usuario inválido\n\n");
-		return;
-	}
-	printf("usr Id: %d\nusr nome: %s\n\n", usr->ID, usr->nome);
-}
-
-void printusramgs(Usuario* usr){
-	Usuario** lista = lista_amigos_u(usr);
-
-	for (int i = 0; i < usr->size_a; i++)
-	{
-		printf("id amigo : %d\n", lista[i]->ID);
-	}
-}
